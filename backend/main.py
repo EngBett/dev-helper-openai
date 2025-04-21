@@ -6,12 +6,12 @@ import uuid
 
 app = FastAPI()
 
-signer = Signer("super-secret-session-key")  # 🔐 use env var in prod
+signer = Signer("super-secret-session-key")
 
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # change for prod
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
