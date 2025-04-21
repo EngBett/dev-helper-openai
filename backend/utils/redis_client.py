@@ -2,11 +2,13 @@ import json
 import os
 
 from redis import Redis
-from datetime import datetime
+from datetime import datetime, timedelta
 
 redis_host = os.getenv("REDIS_HOST")
 redis_port = os.getenv("REDIS_PORT")
 redis_client = Redis(host=redis_host, port=redis_port, db=0, decode_responses=True)
+
+EXPIRATION_TIME_SECONDS = 600  # 10 minutes
 
 def save_query_to_redis(session_id: str, question: str, answer: str):
     key = f"queries:{session_id}"
@@ -16,6 +18,7 @@ def save_query_to_redis(session_id: str, question: str, answer: str):
         "timestamp": datetime.utcnow().isoformat()
     }
     redis_client.lpush(key, json.dumps(entry))
+    redis_client.expire(key, EXPIRATION_TIME_SECONDS)  # Set expiration time for the key
 
 def get_all_queries(session_id: str) -> list[dict]:
     key = f"queries:{session_id}"

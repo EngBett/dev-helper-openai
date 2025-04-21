@@ -9,7 +9,7 @@ router = APIRouter()
 @router.post("/ask", response_model=QueryResponse)
 async def ask_question(request: Request, body: QueryRequest):
     try:
-        session_id = request.state.session_id
+        session_id = request.headers.get('X-Session-ID') or request.state.session_id
         print(f"[DEBUG] Initiating search for: {session_id}")
         answer = await get_llm_response(body.question)
         answer = remove_think_tags(answer)
@@ -24,7 +24,7 @@ async def ask_question(request: Request, body: QueryRequest):
 @router.get("/history", response_model=QueryListResponse)
 async def get_query_history(request: Request):
     try:
-        session_id = request.state.session_id
+        session_id = request.headers.get('X-Session-ID') or request.state.session_id
         queries = get_all_queries(session_id)
         # Debugging output
         print(f"[DEBUG] Redis response for session {session_id}:", len(queries))
@@ -40,7 +40,7 @@ async def get_query_history(request: Request):
 @router.delete("/clear-history")
 async def clear_query_history_route(request: Request):
     try:
-        session_id = request.state.session_id
+        session_id = request.headers.get('X-Session-ID') or request.state.session_id
         cleared = clear_query_history(session_id)
         print(f" Cleared query history for session {session_id}")
         return {"success": cleared}

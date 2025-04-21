@@ -12,7 +12,7 @@ interface QueryHistoryItem {
 }
 
 export default function Home() {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;;
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const [question, setQuestion] = useState("");
     const [response, setResponse] = useState("");
@@ -31,11 +31,24 @@ export default function Home() {
         }
     };
 
+    const getSessionId = () => {
+        let sessionId = localStorage.getItem("session_id");
+        if (!sessionId) {
+            sessionId = crypto.randomUUID(); // Generate a new session ID if not present
+            localStorage.setItem("session_id", sessionId);
+        }
+        return sessionId;
+    };
+
     const fetchHistory = async () => {
         setLoadingHistory(true);
         try {
+            const sessionId = getSessionId();
             const res = await fetch(`${API_BASE_URL}/history`, {
                 credentials: "include",
+                headers: {
+                    "X-Session-ID": sessionId, // Pass session ID in headers
+                },
             });
             const data = await res.json();
 
@@ -71,9 +84,13 @@ export default function Home() {
         setResponse("");
 
         try {
+            const sessionId = getSessionId();
             const res = await fetch(`${API_BASE_URL}/ask`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Session-ID": sessionId, // Pass session ID in headers
+                },
                 body: JSON.stringify({question}),
                 credentials: "include",
             });
@@ -122,9 +139,13 @@ export default function Home() {
 
         if (result.isConfirmed) {
             try {
+                const sessionId = getSessionId();
                 await fetch(`${API_BASE_URL}/clear-history`, {
                     method: "DELETE",
                     credentials: "include",
+                    headers: {
+                        "X-Session-ID": sessionId, // Pass session ID in headers
+                    },
                 });
                 setHistory([]);
                 setResponse("");
