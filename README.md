@@ -31,7 +31,7 @@ DevHelper is a full-stack AI assistant that helps developers get instant answers
 
 Create the following environment variable files:
 
-backend/.env
+backend/.env.docker
 
 ```env
 OPENAI_API_KEY=your-nvidia-or-openai-key
