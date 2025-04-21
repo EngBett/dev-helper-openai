@@ -6,7 +6,11 @@ DevHelper is a full-stack AI assistant that helps developers get instant answers
 <img src="src2.jpg" height="250">
 
 ---
+## Live demo
+- Frontend : `https://dev-helper-gakz.vercel.app/`
+- Backend : `https://stickshift.ke/docs`
 
+---
 ## Tech Stack
 
 - Backend: FastAPI (Python)
