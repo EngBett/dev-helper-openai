@@ -53,7 +53,7 @@ Make sure the backend uses redis as the host, since that’s the internal Docker
 ## Step 2: Step 2: Run with Docker Compose
 
 ```bash
-docker-compose up --build
+docker-compose up -d --build
 ```
 This command will build and start both the backend and frontend services.
 
